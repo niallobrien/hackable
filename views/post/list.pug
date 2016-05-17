@@ -11,8 +11,9 @@ block content
           section.post-content!=post.content
 
           hr
-          p by #{post._author.profile.name}
-          hr
+          if post._author
+            p by #{post._author.profile.name}
+            hr
   else
     article.post
     header.post-header
