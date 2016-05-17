@@ -9,31 +9,40 @@ html(lang='en')
     link(href='/styles/main.min.css', rel='stylesheet')
 
   body
-    nav
-      a(href='https://github.com/uptownhr/hackathon-starter-lite', target='_blank') Github
-      a(href='/blog') Blog
-      a(href='/contact') Contact Us
-      .btn-group
+    .container
+      nav.navbar.navbar-light.navbar-faded
+        ul.nav.navbar-nav
+          li.nav-item
+            a.nav-link(href='https://github.com/uptownhr/hackathon-starter-lite', target='_blank') Github
+          li.nav-item
+            a.nav-link(href='/blog') Blog
+          li.nav-item
+            a.nav-link(href='/contact') Contact Us
+
         if user
-          button.btn.btn-info.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-            =user.profile.name || user.email
-            | &nbsp;
-          ul.dropdown-menu
-            if user.role == 'admin' 
+          .dropdown.pull-right
+            button.btn.btn-info.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+              =user.profile.name || user.email
+              | &nbsp;
+            ul.dropdown-menu
+              if user.role == 'admin'
+                li
+                  a.dropdown-item(href='/admin') Admin
               li
-                a(href='/admin') Admin
-            li
-              a(href='/user/account') My Account
-            li
-              a(href='/auth/logout') Logout
+                a.dropdown-item(href='/user/account') My Account
+              li
+                a.dropdown-item(href='/auth/logout') Logout
         else
-          a(href='/auth/login') Login
-    br(style='clear: both;')
-    hr
+          ul.nav.navbar-nav.pull-right
+            li.nav-item
+              a.btn.btn-info(href='/auth/login') Login
+
+
     .container.content
       main
         include partials/flash
         block content
+
       footer.footer(style='clear: both;')
         hr
         small

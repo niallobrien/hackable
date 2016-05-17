@@ -1,7 +1,16 @@
-// Bootstrap with Flexbox enabled. Uncomment to disable
-$enable-flex: true;
+// Customise Bootstrap styles
+// 1) Bring your _variables.scss in first. The variables are defined with !default in the bootstrap _variables.scss file which means to use their value unless the value has already been defined.
+// 2) Bring in bootstrap
+// 3) Next mixins - prioritize your overwrites before other components that depend on them that you want to overwrite.
+// 4) Next overwrites (like navbar, buttons, alerts, etc)
+// 5) Finally, your own styles
 
+
+// Bootstrap with Flexbox enabled. Uncomment to disable
+$enable-flex: false;
+
+@import "themes/default/variables";
 @import "../../../node_modules/bootstrap/scss/bootstrap.scss";
 
 // Existing theme - will be removed.
-@import "themes/to-remove/style";
+//@import "themes/to-remove/style";
