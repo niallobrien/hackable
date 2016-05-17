@@ -6,7 +6,7 @@ html(lang='en')
     title
     link(href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic', rel='stylesheet')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css')
-    link(href='/styles/main.css', rel='stylesheet')
+    link(href='/styles/main.min.css', rel='stylesheet')
 
   body
     nav
@@ -40,16 +40,4 @@ html(lang='en')
           | © hackable
           time 2016
           | . All rights reserved.
-    script(src='/admin/assets/js/jquery.min.js')
-    script(src='/admin/assets/js/chart.js')
-    script(src='/admin/assets/js/tablesorter.min.js')
-    script(src='/admin/assets/js/toolkit.js')
-    script(src='/admin/assets/js/application.js')
-
-    script(async='', src='//platform.twitter.com/widgets.js', charset='utf-8')
-    script(src='http://static.jsbin.com/js/embed.min.js?3.34.0')
-    script.
-      (function () {
-        $('.dropdown-toggle').dropdown();
-      });
-                     
+    script(src='/scripts/main.min.js')

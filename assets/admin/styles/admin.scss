@@ -2,6 +2,11 @@
 $enable-flex: true;
 
 @import "../../../node_modules/bootstrap/scss/bootstrap.scss";
+@import "themes/to-remove/application";
+@import "themes/to-remove/docs";
+@import "themes/to-remove/toolkit-inverse";
+@import "themes/to-remove/toolkit-light";
+@import "themes/to-remove/ghostdown";
 
 /* global body padding */
 body {

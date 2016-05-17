@@ -57,7 +57,7 @@ var Seeder = function () {
         name: 'hackable',
         tag_line: 'create your personal project',
         description: 'jump start your project with an admin, blog, products',
-        logo_url: '/site/img/hackable-logo.png',
+        logo_url: '/images/hackable-logo.png',
         project_url: 'https://github.com/uptownhr/hackable'
       }).save().then(() => new Project({
           name: 'honeybadger',
@@ -66,7 +66,7 @@ var Seeder = function () {
           'that helps you kickstart projects. It provides a boiler-plate code with the' +
           ' goal of being an extremely simple CMS alternative to Wordpress, Drupa, ' +
           'and etc.',
-          logo_url: '/site/img/logo.svg',
+          logo_url: '/images/logo.svg',
           project_url: 'https://github.com/jaequery/honeybadger'
         }).save()
       )

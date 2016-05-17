@@ -91,17 +91,11 @@ gulp.task('scripts:site:watch', function() {
  * @see https://gist.github.com/wesbos/52b8fe7e972356e85b43
  */
 function buildScripts(file, watch) {
-  var props = {
-    entries: file,
-    debug : true,
-    transform:  [babelify]
-  }
-
   // watchify() if watch requested, otherwise run browserify() once
-  var bundler = watch ? watchify(browserify(props)) : browserify(props)
+  var bundler = watch ? watchify(browserify(file)) : browserify(file)
 
   function rebundle() {
-    var stream = bundler.bundle(),
+    var stream = bundler.transform('babelify', {presets: ['es2015']}).bundle(),
         fileName = file.split('/scripts/').pop().split('.js')[0]
 
     return stream
@@ -118,7 +112,11 @@ function buildScripts(file, watch) {
   // listen for an update and run rebundle
   bundler.on('update', function() {
     rebundle()
-    gutil.log('Rebundle...')
+  })
+
+  bundler.on('log', function(message) {
+    gutil.log(message)
+    browserSync.reload()
   })
 
   // run it once the first time buildScripts is called
@@ -185,8 +183,17 @@ gulp.task('styles:site:watch', function() {
 })
 
 gulp.task('copy:jslibs', function() {
-   gulp.src('./assets/admin/lib/**/*.js')
+   gulp.src('./assets/admin/scripts/lib/**/*.js')
      .pipe(gulp.dest('./public/scripts/lib'))
+   gulp.src('./assets/site/scripts/lib/**/*.js')
+     .pipe(gulp.dest('./public/scripts/lib'))
+})
+
+gulp.task('copy:fonts', function() {
+   gulp.src('./assets/admin/fonts/**/*')
+     .pipe(gulp.dest('./public/fonts'))
+   gulp.src('./assets/site/fonts/**/*')
+    .pipe(gulp.dest('./public/fonts'))
 })
 
 gulp.task('clean:dev', function() {
@@ -207,7 +214,8 @@ gulp.task('build:assets', [
   'scripts:site:watch',
   'styles:admin:watch',
   'styles:site:watch',
-  'copy:jslibs'
+  'copy:jslibs',
+  'copy:fonts'
 ])
 
 gulp.task('build', ['build:assets', 'clean:dev'])
