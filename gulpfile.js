@@ -39,8 +39,12 @@ gulp.task('browser-sync', function() {
 })
 
 gulp.task('watch', ['styles:watch', 'scripts:watch', 'browser-sync'], function() {
-      gulp.watch(['./assets/admin/scripts/**/*.js', './assets/site/scripts/**/*.js'])
-        .on('change', browserSync.reload)
+      gulp.watch([
+        './assets/admin/scripts/**/*.js',
+        './assets/site/scripts/**/*.js',
+        './assets/admin/styles/**/*.scss',
+        './assets/site/styles/**/*.scss'
+      ]).on('change', browserSync.reload)
 })
 
 /**
@@ -152,8 +156,7 @@ gulp.task('copy:jslibs', function() {
  * @param  {function} callback
  */
 gulp.task('styles:watch', function() {
-  gulp.watch('./assets/admin/styles/**/*.scss', ['styles:admin'])
-  gulp.watch('./assets/site/styles/**/*.scss', ['styles:site'])
+  gulp.watch(['./assets/admin/styles/**/*.scss', './assets/site/styles/**/*.scss'], ['styles'])
 })
 
 gulp.task('clean:dev', function() {
