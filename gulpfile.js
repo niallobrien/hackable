@@ -175,7 +175,7 @@ gulp.task('styles:admin:watch', function() {
  * @param  {function} callback
  */
 gulp.task('styles:site:watch', function() {
-  gulp.watch('./assets/site/styles/**/*.scss')
+  gulp.watch('./assets/site/styles/**/**/*.scss')
     .on('change', function() {
       buildStyles(paths.site.styles)
       browserSync.reload()
