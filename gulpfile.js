@@ -1,6 +1,5 @@
 // npm i --save-dev gulp-sass gulp-autoprefixer gulp-postcss gulp-cssnano gulp-rename gulp-size gulp-uglify gulp-util browser-sync browserify watchify del babelify vinyl-source-stream vinyl-buffer gulp-notify babel-preset-stage-3 babel-register
 var gulp = require('gulp'),
-    fs = require('fs'),
     sass = require('gulp-sass'),
     autoprefixer = require('gulp-autoprefixer'),
     postcss = require('gulp-postcss'),
@@ -28,7 +27,6 @@ var gulp = require('gulp'),
       }
     }
 
-
 gulp.task('browser-sync', function() {
   browserSync.init({
     proxy: 'http://localhost:3000',
@@ -36,15 +34,6 @@ gulp.task('browser-sync', function() {
     xip: true,
     host: 'localhost'
   })
-})
-
-gulp.task('watch', ['styles:watch', 'scripts:watch', 'browser-sync'], function() {
-      gulp.watch([
-        './assets/admin/scripts/**/*.js',
-        './assets/site/scripts/**/*.js',
-        './assets/admin/styles/**/*.scss',
-        './assets/site/styles/**/*.scss'
-      ]).on('change', browserSync.reload)
 })
 
 /**
@@ -62,10 +51,46 @@ function handleErrors() {
 }
 
 /**
+ * Build our main.js file
+ * @param  {string} 'scripts'
+ * @param  {function} callback
+ */
+gulp.task('scripts:admin', function() {
+  return buildScripts(paths.admin.scripts, false)
+})
+
+/**
+ * Build our main.js file
+ * @param  {string} 'scripts'
+ * @param  {function} callback
+ */
+gulp.task('scripts:site', function() {
+  return buildScripts(paths.site.scripts, false)
+})
+
+/**
+ * Watch and build our main.js file
+ * @param  {string} 'scripts:watch'
+ * @param  {function} callback
+ */
+gulp.task('scripts:admin:watch', function() {
+  return buildScripts(paths.admin.scripts, true)
+})
+
+/**
+ * Watch and build our main.js file
+ * @param  {string} 'scripts:watch'
+ * @param  {function} callback
+ */
+gulp.task('scripts:site:watch', function() {
+  return buildScripts(paths.site.scripts, true)
+})
+
+/**
  * Build scripts
  * @see https://gist.github.com/wesbos/52b8fe7e972356e85b43
  */
-function buildScript(file, watch) {
+function buildScripts(file, watch) {
   var props = {
     entries: file,
     debug : true,
@@ -96,28 +121,17 @@ function buildScript(file, watch) {
     gutil.log('Rebundle...')
   })
 
-  // run it once the first time buildScript is called
+  // run it once the first time buildScripts is called
   return rebundle()
 }
 
 /**
- * Build our main.js file
- * @param  {string} 'scripts'
- * @param  {function} callback
+ * Compile styles
+ * @param  {string} 'styles'
+ * @param  {function} callback for the task
  */
-gulp.task('scripts', function() {
-  buildScript(paths.admin.scripts, false)
-  return buildScript(paths.site.scripts, false)
-})
-
-/**
- * Watch and build our main.js file
- * @param  {string} 'scripts:watch'
- * @param  {function} callback
- */
-gulp.task('scripts:watch', function() {
-  buildScript(paths.admin.scripts, true)
-  return buildScript(paths.site.scripts, true)
+gulp.task('styles:admin', function() {
+  return buildStyles(paths.admin.styles)
 })
 
 /**
@@ -125,8 +139,7 @@ gulp.task('scripts:watch', function() {
  * @param  {string} 'styles'
  * @param  {function} callback for the task
  */
-gulp.task('styles', function() {
-  buildStyles(paths.admin.styles)
+gulp.task('styles:site', function() {
   return buildStyles(paths.site.styles)
 })
 
@@ -145,9 +158,17 @@ function buildStyles(file) {
     .pipe(browserSync.stream())
 }
 
-gulp.task('copy:jslibs', function() {
-   gulp.src('./assets/admin/lib/**/*.js')
-     .pipe(gulp.dest('./public/scripts/lib'))
+/**
+ * Watch styles and run the 'styles' task on change
+ * @param  {string} 'styles:watch'
+ * @param  {function} callback
+ */
+gulp.task('styles:admin:watch', function() {
+  gulp.watch('./assets/admin/styles/**/*.scss')
+    .on('change', function() {
+      buildStyles(paths.admin.styles)
+      browserSync.reload()
+    })
 })
 
 /**
@@ -155,8 +176,17 @@ gulp.task('copy:jslibs', function() {
  * @param  {string} 'styles:watch'
  * @param  {function} callback
  */
-gulp.task('styles:watch', function() {
-  gulp.watch(['./assets/admin/styles/**/*.scss', './assets/site/styles/**/*.scss'], ['styles'])
+gulp.task('styles:site:watch', function() {
+  gulp.watch('./assets/site/styles/**/*.scss')
+    .on('change', function() {
+      buildStyles(paths.site.styles)
+      browserSync.reload()
+    })
+})
+
+gulp.task('copy:jslibs', function() {
+   gulp.src('./assets/admin/lib/**/*.js')
+     .pipe(gulp.dest('./public/scripts/lib'))
 })
 
 gulp.task('clean:dev', function() {
@@ -168,6 +198,18 @@ gulp.task('clean:dev', function() {
   ])
 })
 
-gulp.task('build', ['styles', 'scripts', 'clean:dev'])
+gulp.task('build:assets', [
+  'scripts:admin',
+  'scripts:site',
+  'styles:admin',
+  'styles:site',
+  'scripts:admin:watch',
+  'scripts:site:watch',
+  'styles:admin:watch',
+  'styles:site:watch',
+  'copy:jslibs'
+])
 
-gulp.task('default', ['styles', 'watch', 'copy:jslibs'])
+gulp.task('build', ['build:assets', 'clean:dev'])
+
+gulp.task('default', ['build:assets', 'browser-sync'])
